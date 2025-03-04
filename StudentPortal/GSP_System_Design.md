@@ -292,19 +292,37 @@ The system implements multi-tenancy through a hybrid approach:
 
 ## Scalability and Performance
 
+### Ключевые метрики и масштаб системы
+
+- **Масштаб развертывания:**
+
+  - Обслуживание до 35,000 учебных заведений глобально
+  - В среднем 20,000 студентов на учреждение
+  - Всего около 700 миллионов пользователей в системе
+  - Ежедневно активные пользователи (DAU): ~210 миллионов (30%)
+
+- **Нагрузка на систему:**
+  - Пиковые нагрузки во время регистрации: до 50 миллионов запросов в час
+  - Пиковые нагрузки во время оценивания: до 30 миллионов запросов в час
+  - Ежедневный объем транзакций: ~10 миллиардов операций
+  - Общие требования к хранилищу: более 10 петабайт данных
+
 ### Horizontal Scaling
 
-- Stateless application design
-- Container orchestration with auto-scaling
-- Database read replicas for query-heavy operations
+- Глобально распределенная архитектура с множеством регионов
+- Stateless application design для бесшовного масштабирования
+- Федеративная модель микросервисов с 30+ кластерами
+- Container orchestration с динамическим auto-scaling
+- Географическое шардирование баз данных
 - Regional deployment for latency reduction
 
 ### Performance Optimization
 
-- CDN integration for static assets
-- API response caching
-- Database query optimization
-- Lazy loading of UI components
+- Многоуровневое кэширование с глобальным распределенным кэшем
+- Глобальная сеть CDN с edge computing для статических ресурсов
+- API response caching с географической оптимизацией
+- Database query optimization с предварительным агрегированием данных
+- Асинхронная обработка для неинтерактивных операций
 - Background processing for long-running operations
 
 ### High Availability

@@ -135,67 +135,76 @@ sequenceDiagram
 ### Стратегия масштабирования системы
 
 ```mermaid
-flowchart TB
-    subgraph "Стратегия масштабирования"
-        subgraph "Уровень приложения"
-            StatelessDesign["Stateless дизайн"]
-            HorizontalScaling["Горизонтальное масштабирование"]
-            AutoScaling["Автоматическое масштабирование"]
-            ResourcePools["Пулы ресурсов"]
-        end
-
-        subgraph "База данных"
-            ReadReplicas["Реплики для чтения"]
-            DBSharding["Шардирование"]
-            ConnectionPooling["Пулы соединений"]
-            DatabaseCaching["Кэширование данных"]
-        end
-
-        subgraph "Кэширование"
-            DistributedCache["Распределенный кэш"]
-            RedisCluster["Redis кластер"]
-            CachingStrategies["Стратегии кэширования"]
-            TTLPolicies["Политики TTL"]
-        end
-
-        subgraph "Контент-доставка"
-            CDN["CDN"]
-            StaticAssets["Статические ресурсы"]
-            EdgeCaching["Edge кэширование"]
-            GeoDNS["Географическая маршрутизация"]
-        end
-
-        subgraph "Multi-tenancy"
-            TenantIsolation["Изоляция арендаторов"]
-            ResourceLimiting["Ограничение ресурсов"]
-            TenantTiers["Уровни арендаторов"]
-            DedicatedResources["Выделенные ресурсы"]
-        end
+flowchart TD
+    subgraph "Уровень приложения"
+        LoadBalancer["Глобальный балансировщик нагрузки"]
+        RegionalLB["Региональные балансировщики"]
+        ServiceMesh["Service Mesh\nФедерированная маршрутизация"]
+        WebTier["Автомасштабируемый\nвеб-уровень\n100+ регионов"]
+        APITier["Автомасштабируемый\nAPI-уровень\n50+ регионов"]
+        MicroservicesTier["Федерированные микросервисы\n30+ кластеров"]
     end
 
-    StatelessDesign --> HorizontalScaling
-    HorizontalScaling --> AutoScaling
-    AutoScaling --> ResourcePools
+    subgraph "Стратегии баз данных"
+        GlobalDB["Глобальная федерация БД"]
+        RegionalShards["Региональные шарды\nпо 100+ ТБ"]
+        MultiMasterRepl["Мульти-мастер репликация"]
+        ReadReplicas["Реплики для чтения\n5+ на шард"]
+        CQRS["CQRS разделение\nчтение/запись"]
+    end
 
-    ResourcePools --> ReadReplicas
-    ReadReplicas --> DBSharding
-    DBSharding --> ConnectionPooling
-    ConnectionPooling --> DatabaseCaching
+    subgraph "Кэширование"
+        GlobalCache["Глобальный распределенный кэш"]
+        RegionalCache["Региональные кэши"]
+        EdgeCache["Edge caching\n100+ точек присутствия"]
+        ApplicationCache["Кэш приложений"]
+        InMemoryDB["In-memory базы данных"]
+    end
 
-    DatabaseCaching --> DistributedCache
-    DistributedCache --> RedisCluster
-    RedisCluster --> CachingStrategies
-    CachingStrategies --> TTLPolicies
+    subgraph "Доставка контента"
+        GlobalCDN["Глобальный CDN"]
+        MultiCDN["Мульти-CDN стратегия"]
+        EdgeComputing["Edge computing"]
+        StaticAssets["Статические ресурсы"]
+    end
 
-    TTLPolicies --> CDN
-    CDN --> StaticAssets
-    StaticAssets --> EdgeCaching
-    EdgeCaching --> GeoDNS
+    subgraph "Мульти-тенантность"
+        DedicatedShards["Выделенные шарды\nдля крупных университетов"]
+        SharedShards["Общие шарды\nдля средних университетов"]
+        MicroShards["Микро-шарды\nдля малых университетов"]
+        TenantIsolation["Изоляция по тенантам"]
+        ResourceAllocation["Динамическое\nвыделение ресурсов"]
+    end
 
-    GeoDNS --> TenantIsolation
-    TenantIsolation --> ResourceLimiting
-    ResourceLimiting --> TenantTiers
-    TenantTiers --> DedicatedResources
+    LoadBalancer --> RegionalLB
+    RegionalLB --> WebTier
+    RegionalLB --> APITier
+    WebTier --> EdgeCache
+    APITier --> ServiceMesh
+    ServiceMesh --> MicroservicesTier
+    MicroservicesTier --> GlobalDB
+    MicroservicesTier --> GlobalCache
+
+    GlobalDB --> RegionalShards
+    RegionalShards --> MultiMasterRepl
+    RegionalShards --> ReadReplicas
+    RegionalShards --> CQRS
+
+    GlobalCache --> RegionalCache
+    RegionalCache --> ApplicationCache
+    RegionalCache --> InMemoryDB
+
+    GlobalCDN --> MultiCDN
+    MultiCDN --> EdgeComputing
+    EdgeComputing --> StaticAssets
+
+    GlobalDB --> DedicatedShards
+    GlobalDB --> SharedShards
+    GlobalDB --> MicroShards
+    DedicatedShards --> TenantIsolation
+    SharedShards --> TenantIsolation
+    MicroShards --> TenantIsolation
+    TenantIsolation --> ResourceAllocation
 ```
 
 ### Масштабирование нагрузки во время пиковых периодов
@@ -647,3 +656,48 @@ graph TD
     DiskIO --> ConnectionsCount
     ConnectionsCount --> QueueDepth
 ```
+
+## Метрики системы и прогнозируемая нагрузка
+
+```mermaid
+graph TB
+    subgraph "Ключевые метрики Global Student Portal"
+        Users["Общее число пользователей:\n~700 миллионов"]
+        Institutions["Количество учреждений:\n~35,000"]
+        StudentsPerInst["Студентов на учреждение:\n~20,000"]
+        DAU["Ежедневно активные пользователи:\n~210 миллионов (30%)"]
+        Transactions["Транзакции в день:\n~10 миллиардов"]
+        Storage["Требования к хранилищу:\n~10+ петабайт"]
+    end
+
+    Institutions --> StudentsPerInst
+    StudentsPerInst --> Users
+    Users --> DAU
+    DAU --> Transactions
+    Users --> Storage
+
+    subgraph "Пиковые нагрузки"
+        RegPeak["Пик регистрации:\n~50 миллионов запросов/час"]
+        GradePeak["Пик оценивания:\n~30 миллионов запросов/час"]
+        PaymentPeak["Пик платежей:\n~5 миллионов транзакций/час"]
+    end
+```
+
+| Метрика                               | Значение                 | Примечания                                                   |
+| ------------------------------------- | ------------------------ | ------------------------------------------------------------ |
+| Количество учреждений                 | ~35,000                  | Разнообразие от небольших колледжей до крупных университетов |
+| Студентов в каждом учреждении         | ~20,000                  | В среднем, варьируется от 1,000 до 100,000+                  |
+| Общее количество пользователей        | ~700 миллионов           | Включая студентов, преподавателей, администраторов           |
+| Ежедневно активные пользователи (DAU) | ~210 миллионов (30%)     | Может увеличиваться в период экзаменов                       |
+| Хранение данных пользователя          | ~15 ГБ на 1000 студентов | Включая документы, задания, тесты                            |
+| Общие требования к хранилищу          | >10 петабайт             | С учетом роста и резервного копирования                      |
+
+### Влияние на архитектуру
+
+Эти метрики подтверждают необходимость:
+
+- Глобально распределенной архитектуры с несколькими дата-центрами
+- Шардинга данных по географическому принципу
+- Aggressive caching на всех уровнях
+- Асинхронной обработки для неинтерактивных задач
+- Автоматического масштабирования инфраструктуры
