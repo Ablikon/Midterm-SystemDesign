@@ -104,25 +104,3 @@ To review this system design:
 5. Study the [Business Processes](business_processes.md) to understand the key workflows
 6. Review the [Requirements Specification](requirements_specification.md) for detailed functional requirements
 7. Understand the [Implementation Strategy](implementation_strategy.md) for deployment and development plans
-
-## Viewing the Diagrams
-
-All diagrams in this project are created using Mermaid syntax. To view these diagrams:
-
-1. Use online tools like [Mermaid Live Editor](https://mermaid.live/)
-2. Install a Markdown editor with Mermaid support (Typora, Mark Text, Obsidian)
-3. Use VS Code with Markdown Preview Enhanced extension
-4. Export to images using Mermaid CLI or online converters
-
-## Contributors
-
-This system design was created by [Your Team/Organization] as part of a comprehensive educational platform initiative. The design draws inspiration from best practices in enterprise architecture, educational technology, and cloud-native application development.
-
-## License
-
-[Appropriate license information]
-
----
-
-_Note: This system design represents a conceptual architecture and implementation approach for a global student portal system. Actual implementation may require adjustments based on specific requirements, constraints, and technological advancements._
-# Mid

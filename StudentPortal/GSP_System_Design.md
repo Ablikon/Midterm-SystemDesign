@@ -515,9 +515,3 @@ For more detailed visual representations and information, please refer to these 
 5. **[Requirements Specification](requirements_specification.md)** - Comprehensive specification of functional and non-functional requirements for the GSP system.
 
 6. **[Implementation Strategy](implementation_strategy.md)** - Development phases, timeline, and deployment strategy for the GSP implementation.
-
-All diagrams are created using Mermaid syntax and can be viewed using online tools like [Mermaid Live Editor](https://mermaid.live/) or Markdown editors with Mermaid support.
-
----
-
-This system design document provides a comprehensive blueprint for the Global Student Portal. The actual implementation may be phased based on institutional priorities and resource availability.
